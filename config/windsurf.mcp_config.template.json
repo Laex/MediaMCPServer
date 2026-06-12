@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "media-mcp-server": {
+      "command": "INSTALL_DIR\\bin\\MediaMCPServer.exe",
+      "args": [],
+      "cwd": "INSTALL_DIR\\bin"
+    }
+  }
+}

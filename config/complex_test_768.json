@@ -1,0 +1,7 @@
+{
+  "sourceVideo": "d:\\Work\\Delphi\\OpenCV\\MediaMCPServer\\data\\media\\input\\768x576.avi",
+  "sourceVideoOriginal": "D:\\Work\\Delphi\\OpenCV\\Delphi-FFMPEG\\resource\\768x576.avi",
+  "runId": "complex_768x576",
+  "title": "Комплексный QA-пайплайн MCP (768x576.avi)",
+  "userPrompt": "Проанализируй тестовый ролик 768x576.avi как эталон FFmpeg: проверь поток, метаданные, найди сцены и тишину, сними кадры, прогони CV (края, контуры, OCR, QR), сгенерируй QR-метку, нарежь и склей highlight, сделай web-версию 480p, извлеки аудио, собери финальный MP4 и отчёт."
+}

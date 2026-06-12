@@ -1,0 +1,45 @@
+# Generated MCP client configs
+.codex/
+.cursor/
+
+# Downloaded dependency cache (OpenCV installer, FFmpeg zip, wrapper build)
+.deps/
+
+# Build artifacts
+bin/*.exe
+bin/*.dll
+bin/*.onnx
+bin/*.pb
+bin/models/*
+!bin/models/.gitkeep
+dcu/
+
+# User data (keep readme and directory structures)
+data/media/captures/*
+!data/media/captures/.gitkeep
+data/media/output/*
+!data/media/output/.gitkeep
+data/media/video/*
+!data/media/video/.gitkeep
+data/media/faces/*
+!data/media/faces/.gitkeep
+!data/media/readme.txt
+
+# Legacy locations
+media/
+bin/face_data/
+bin/*.jpg
+bin/*.png
+bin/*.mp4
+bin/*.avi
+
+# Delphi IDE temporary and local files
+__history/
+__recovery/
+*.identcache
+*.local
+*.stat
+
+# Logs and secrets
+*.log
+.env
