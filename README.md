@@ -28,7 +28,6 @@ MediaMCPServer/
 ├── README.md
 ├── install.ps1              # entry point (dev)
 ├── build.ps1                # entry point (dev)
-├── .cursor/mcp.json         # Cursor MCP config (generated)
 ├── src/                     # Delphi source (.pas, .dpr)
 ├── scripts/
 │   ├── install.ps1
@@ -95,6 +94,17 @@ See **[docs/INSTALLATION.md](docs/INSTALLATION.md)** for step-by-step setup in e
 
 Quick config (Cursor / Antigravity / Windsurf / Claude):
 
+### Streamable HTTP
+
+```powershell
+.\bin\MediaMCPServer.exe --http --port 8765
+# or: .\bin\launch_http.cmd
+```
+
+Client config: `"url": "http://127.0.0.1:8765/mcp"` — see `config/mcp.http.json.template` and [docs/INSTALLATION.md](docs/INSTALLATION.md).
+
+### stdio
+
 ```json
 {
   "mcpServers": {
@@ -109,14 +119,6 @@ Quick config (Cursor / Antigravity / Windsurf / Claude):
 
 Codex uses `~/.codex/config.toml` — see `config/codex.config.toml.template`.
 
-### Streamable HTTP (optional)
-
-```powershell
-.\bin\MediaMCPServer.exe --http --port 8765
-# or: .\bin\launch_http.cmd
-```
-
-Client config: `"url": "http://127.0.0.1:8765/mcp"` — see `config/mcp.http.json.template` and [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
 ## Environment variables
 
