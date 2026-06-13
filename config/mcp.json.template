@@ -1,9 +1,7 @@
 {
   "mcpServers": {
     "media-mcp-server": {
-      "command": "C:\\Path\\To\\media-mcp-server\\bin\\MediaMCPServer.exe",
-      "args": [],
-      "cwd": "C:\\Path\\To\\media-mcp-server\\bin"
+      "url": "http://127.0.0.1:8765/mcp"
     }
   }
 }

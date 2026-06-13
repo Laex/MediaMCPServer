@@ -38,6 +38,7 @@ function Esc([string]$p) { return $p -replace '\\', '\\' }
 function Start-McpSession {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = $exePath
+    $psi.Arguments = '--stdio'
     $psi.UseShellExecute = $false
     $psi.RedirectStandardInput = $true
     $psi.RedirectStandardOutput = $true

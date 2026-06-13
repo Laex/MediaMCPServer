@@ -7,7 +7,7 @@ $ExePath = Join-Path $BinDir 'MediaMCPServer.exe'
 
 if (-not (Test-Path $ExePath)) { Write-Error "Executable not found: $ExePath" }
 
-$proc = Start-Process -FilePath $ExePath -ArgumentList @('--http', '--port', $Port) -WorkingDirectory $BinDir -PassThru -WindowStyle Hidden
+$proc = Start-Process -FilePath $ExePath -ArgumentList @('--port', $Port) -WorkingDirectory $BinDir -PassThru -WindowStyle Hidden
 Start-Sleep -Seconds 2
 
 function Invoke-McpHttp {

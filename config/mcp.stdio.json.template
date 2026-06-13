@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "media-mcp-server": {
+      "command": "C:\\Path\\To\\media-mcp-server\\bin\\MediaMCPServer.exe",
+      "args": ["--stdio"],
+      "cwd": "C:\\Path\\To\\media-mcp-server\\bin"
+    }
+  }
+}

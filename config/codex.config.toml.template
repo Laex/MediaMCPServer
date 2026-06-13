@@ -1,18 +1,8 @@
-# OpenAI Codex — Media MCP Server
-# Global:  %USERPROFILE%\.codex\config.toml
-# Project:  .codex\config.toml  (requires trusted project in Codex)
-#
-# Replace INSTALL_DIR with your installation path.
+# Media MCP Server - Streamable HTTP (default)
+# Merge into %USERPROFILE%\.codex\config.toml or use .codex\config.toml in project root
 
 [mcp_servers.media-mcp-server]
-command = "INSTALL_DIR/bin/MediaMCPServer.exe"
-args = []
-cwd = "INSTALL_DIR/bin"
+url = "http://127.0.0.1:8765/mcp"
 enabled = true
 startup_timeout_sec = 30
 tool_timeout_sec = 120
-
-# Optional environment (uncomment if needed):
-# [mcp_servers.media-mcp-server.env]
-# MEDIA_MCP_DATA_PATH = "INSTALL_DIR/data/media"
-# MEDIA_MCP_DEBUG = "1"

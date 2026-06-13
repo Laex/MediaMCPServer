@@ -15,7 +15,7 @@ Write-Host @"
   Media MCP Server - Install
   ==========================
   Downloads ONNX models, FFmpeg and OpenCV runtime DLLs directly,
-  builds MediaMCPServer.exe, configures Cursor MCP.
+  builds MediaMCPServer.exe, configures MCP (HTTP).
 
 "@ -ForegroundColor Cyan
 

@@ -14,6 +14,7 @@ function Start-McpSession {
     $psi.RedirectStandardInput = $true
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
+    $psi.Arguments = '--stdio'
     $psi.CreateNoWindow = $true
     return [System.Diagnostics.Process]::Start($psi)
 }

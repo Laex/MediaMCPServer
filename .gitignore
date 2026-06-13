@@ -6,7 +6,7 @@
 .deps/
 
 # dist
-dist/
+dist/*
 
 # Build artifacts
 bin/*.exe

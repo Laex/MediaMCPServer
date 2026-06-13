@@ -9,6 +9,7 @@ if (-not (Test-Path $exePath)) { Write-Error "Run build.ps1 first." }
 function Start-McpSession {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = $exePath
+    $psi.Arguments = '--stdio'
     $psi.UseShellExecute = $false
     $psi.RedirectStandardInput = $true
     $psi.RedirectStandardOutput = $true

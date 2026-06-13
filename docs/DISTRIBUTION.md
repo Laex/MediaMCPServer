@@ -10,6 +10,7 @@ media-mcp-server-YYYY.MM.DD-win64/
 ├── data/media/           User captures, output, faces, video
 ├── config/               MCP config templates (all clients)
 ├── docs/INSTALLATION.md  Setup guide (Cursor, Codex, Antigravity, …)
+├── docs/WSL.md           WSL client setup (HTTP to Windows server)
 ├── docs/EXAMPLES.md      Complex use cases (webinar recap, OCR, montage)
 ├── install.ps1           Configure MCP clients
 ├── README.md             This file
@@ -31,40 +32,41 @@ media-mcp-server-YYYY.MM.DD-win64/
 ## install.ps1 options
 
 ```powershell
-.\install.ps1                    # Cursor + Codex + Claude + snippets (default)
-.\install.ps1 -Mode cursor       # .cursor/mcp.json
+.\install.ps1                    # HTTP config + start server (default)
+.\install.ps1 -Mode cursor       # .cursor/mcp.json (HTTP)
+.\install.ps1 -Mode stdio        # stdio config instead of HTTP
 .\install.ps1 -Mode codex        # .codex/config.toml
 .\install.ps1 -Mode antigravity  # snippet for Antigravity
 .\install.ps1 -Mode windsurf     # snippet for Windsurf
 .\install.ps1 -Mode claude       # Claude Desktop
 .\install.ps1 -Mode snippets     # all snippets in config\
+.\install.ps1 -Mode wsl          # HTTP config for WSL clients
 .\install.ps1 -Mode print        # print JSON + TOML to console
 .\install.ps1 -TargetDir "D:\Apps\media-mcp-server"
 ```
 
-Full per-client instructions: [INSTALLATION.md](INSTALLATION.md)
+Full per-client instructions: [INSTALLATION.md](INSTALLATION.md)  
+WSL (client in Linux, server on Windows): [WSL.md](WSL.md)
 
 ## MCP configuration
 
-`install.ps1` generates a direct-launch config:
+`install.ps1` generates HTTP config by default:
 
 ```json
 {
   "mcpServers": {
     "media-mcp-server": {
-      "command": "C:\\Tools\\media-mcp-server\\bin\\MediaMCPServer.exe",
-      "args": [],
-      "cwd": "C:\\Tools\\media-mcp-server\\bin"
+      "url": "http://127.0.0.1:8765/mcp"
     }
   }
 }
 ```
 
-- `command` — absolute path to `MediaMCPServer.exe`
-- `cwd` — must be `bin\` so DLLs and models load correctly
-- Use **double backslashes** in JSON paths
+- `url` — Streamable HTTP endpoint (server must be running: `cd bin; .\launch_http.cmd`)
+- **stdio (optional):** `.\install.ps1 -Mode stdio` — uses `command`, `args: ["--stdio"]`, `cwd`
+- Use **double backslashes** in JSON paths (stdio mode)
 
-Template without machine-specific paths: `config\mcp.json.template`
+Templates: `config\mcp.json.template` (HTTP), `config\mcp.stdio.json.template`
 
 ## Requirements (target machine)
 
@@ -113,8 +115,8 @@ Verify before packaging:
 
 | Issue | Fix |
 |-------|-----|
-| MCP server errored | Run `.\install.ps1`, check paths in `.cursor\mcp.json` |
-| Yellow MCP status | Reload Cursor window; confirm 47 tools are listed |
+| MCP server errored | Run `.\install.ps1`; check `url` in MCP config; start HTTP: `cd bin; .\launch_http.cmd` |
+| Yellow MCP status | Reload IDE window (Cursor: Reload Window); confirm 47 tools are listed |
 | DLL load failed | Extract full ZIP; `cwd` must point to `bin\` |
 | Models not found | Ensure `bin\models\` exists inside package |
 | JSON syntax error | Paths must use `\\` not `\` |

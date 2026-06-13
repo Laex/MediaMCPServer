@@ -8,6 +8,7 @@ $trimOut = Join-Path (Join-Path $MediaDir 'video') 'trim_fix_test.mp4'
 function Start-McpSession {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = $exePath
+    $psi.Arguments = '--stdio'
     $psi.UseShellExecute = $false
     $psi.RedirectStandardInput = $true
     $psi.RedirectStandardOutput = $true

@@ -1,0 +1,10 @@
+# Media MCP Server - stdio transport (optional)
+# Start server via client; use --stdio on MediaMCPServer.exe
+
+[mcp_servers.media-mcp-server]
+command = "INSTALL_DIR/bin/MediaMCPServer.exe"
+args = ["--stdio"]
+cwd = "INSTALL_DIR/bin"
+enabled = true
+startup_timeout_sec = 30
+tool_timeout_sec = 120

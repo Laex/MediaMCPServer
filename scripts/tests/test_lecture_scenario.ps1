@@ -35,6 +35,7 @@ $state = [ordered]@{
 function Start-McpSession {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = $exePath
+    $psi.Arguments = '--stdio'
     $psi.WorkingDirectory = $BinDir
     $psi.UseShellExecute = $false
     $psi.RedirectStandardInput = $true

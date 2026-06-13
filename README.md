@@ -1,6 +1,6 @@
 # Media-MCP-Server
 
-MCP server (stdio + Streamable HTTP) for media processing via **OpenCV 5**, **FFmpeg**, and **ONVIF**.
+MCP server (Streamable HTTP + optional stdio) for media processing via **OpenCV 5**, **FFmpeg**, and **ONVIF**.
 
 ## Quick start (development)
 
@@ -9,7 +9,7 @@ cd MediaMCPServer
 .\install.ps1
 ```
 
-Then **Cursor → Settings → MCP → Refresh**.
+Then refresh MCP in your client and ensure the HTTP server is running (see [docs/INSTALLATION.md](docs/INSTALLATION.md)).
 
 ## Quick start (production package)
 
@@ -19,7 +19,7 @@ Extract `dist\media-mcp-server-*.zip`, then:
 .\install.ps1
 ```
 
-Open the extracted folder as a Cursor workspace and refresh MCP.
+Open the extracted folder as a workspace in your MCP client and refresh the server list.
 
 ## Project layout
 
@@ -40,7 +40,8 @@ MediaMCPServer/
 ├── config/
 │   └── mcp.json.template
 ├── docs/
-│   ├── INSTALLATION.md      # setup for Cursor, Codex, Antigravity, …
+│   ├── INSTALLATION.md      # MCP client setup (all supported IDEs)
+│   ├── WSL.md               # WSL client + Windows server (HTTP)
 │   ├── EXAMPLES.md          # complex use cases & agent workflows
 │   ├── DISTRIBUTION.md
 │   └── models-readme.txt
@@ -71,10 +72,15 @@ MediaMCPServer/
 | `.\scripts\download_ffmpeg_dll.ps1` | FFmpeg DLLs only |
 | `.\scripts\download_opencv_runtime.ps1` | OpenCV DLLs + build `opencv_delphi_wrapper.dll` |
 | `.\scripts\package.ps1` | Create production ZIP in `dist\` |
-| `.\scripts\setup_mcp.ps1` | Regenerate `.cursor/mcp.json` |
+| `.\scripts\setup_mcp.ps1` | Regenerate project MCP config (HTTP, starts server) |
+| `.\scripts\setup_mcp.ps1 -Stdio` | stdio MCP config instead of HTTP |
+| `.\scripts\setup_mcp.ps1 -Wsl` | WSL HTTP setup (Windows side) |
+| `.\scripts\setup_wsl_http.ps1` | Detect WSL networking, start HTTP, write snippets |
+| `bash scripts/setup_wsl_mcp.sh` | Configure MCP in WSL (run inside WSL) |
 | `.\scripts\verify_install.ps1` | Check installation |
-| `.\scripts\tests\test_tools.ps1` | Smoke test via stdio |
-| `.\scripts\tests\test_http_mcp.ps1` | Smoke test via Streamable HTTP |
+| `.\scripts\tests\test_http_mcp.ps1` | Smoke test via Streamable HTTP (default) |
+| `.\scripts\tests\test_tools.ps1` | Smoke test via stdio (`--stdio`) |
+| `bash scripts/tests/test_http_mcp_wsl.sh` | HTTP smoke test from WSL |
 
 ### install.ps1 options
 
@@ -86,38 +92,24 @@ MediaMCPServer/
 
 ## MCP clients
 
-Supported environments: **Cursor**, **OpenAI Codex**, **Google Antigravity**, **Windsurf**, **Claude Desktop**, **VS Code**.
-
-See **[docs/INSTALLATION.md](docs/INSTALLATION.md)** for step-by-step setup in each IDE/CLI.
+Supported MCP clients and per-IDE setup: **[docs/INSTALLATION.md](docs/INSTALLATION.md)**.
 
 **Complex workflow examples** (webinar recap; ONVIF/RTSP warehouse monitoring; USB webcam access control): **[docs/EXAMPLES.md](docs/EXAMPLES.md)**.
 
-Quick config (Cursor / Antigravity / Windsurf / Claude):
-
-### Streamable HTTP
+Quick config (Streamable HTTP — default):
 
 ```powershell
-.\bin\MediaMCPServer.exe --http --port 8765
+.\bin\MediaMCPServer.exe
 # or: .\bin\launch_http.cmd
 ```
 
-Client config: `"url": "http://127.0.0.1:8765/mcp"` — see `config/mcp.http.json.template` and [docs/INSTALLATION.md](docs/INSTALLATION.md).
+Client config: `"url": "http://127.0.0.1:8765/mcp"` — see `config/mcp.json.template` and [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
-### stdio
+### stdio (optional)
 
-```json
-{
-  "mcpServers": {
-    "media-mcp-server": {
-      "command": "D:\\...\\bin\\MediaMCPServer.exe",
-      "args": [],
-      "cwd": "D:\\...\\bin"
-    }
-  }
-}
-```
+Run the server with `--stdio` and use `command` + `cwd` in client config — see `config/mcp.stdio.json.template`.
 
-Codex uses `~/.codex/config.toml` — see `config/codex.config.toml.template`.
+**WSL:** client in WSL, server on Windows — [docs/WSL.md](docs/WSL.md).
 
 
 ## Environment variables
@@ -128,7 +120,7 @@ Codex uses `~/.codex/config.toml` — see `config/codex.config.toml.template`.
 | `OPENCV_MODELS_PATH` / `MEDIA_MCP_MODELS_PATH` | ONNX models directory |
 | `MEDIA_MCP_DATA_PATH` | Override `data\media\` |
 | `MEDIA_MCP_DEBUG=1` | Log to stderr |
-| `MEDIA_MCP_TRANSPORT=http` | Start in HTTP mode (same as `--http`) |
+| `MEDIA_MCP_TRANSPORT=stdio` | Force stdio mode (default is HTTP) |
 | `MEDIA_MCP_HTTP_HOST` | HTTP bind host (default `127.0.0.1`) |
 | `MEDIA_MCP_HTTP_PORT` | HTTP port (default `8765`) |
 | `MEDIA_MCP_HTTP_PATH` | HTTP path (default `/mcp`) |
@@ -154,7 +146,7 @@ Creates `dist\media-mcp-server-YYYY.MM.DD-win64.zip`:
 - `bin\` — exe, DLLs, ONNX models
 - `data\media\` — empty user storage
 - `config\` — MCP config template
-- `install.ps1` — configures Cursor / Claude Desktop MCP
+- `install.ps1` — configures MCP clients
 - `README.md`, `VERSION.txt`
 
 On **target machine** (no Delphi):
@@ -170,7 +162,8 @@ See [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) for deployment details.
 
 | Issue | Fix |
 |-------|-----|
-| MCP JSON error | Run `.\scripts\setup_mcp.ps1` (paths must use `\\` in JSON) |
+| MCP connection refused | Start HTTP server: `cd bin; .\launch_http.cmd` |
+| MCP JSON error | Run `.\scripts\setup_mcp.ps1` |
 | Yellow MCP status | Wait or reload window; check tools count in MCP panel |
 | Missing models | `.\scripts\download_models.ps1 -Force` |
 | Missing FFmpeg | `.\scripts\download_ffmpeg_dll.ps1 -Force` |

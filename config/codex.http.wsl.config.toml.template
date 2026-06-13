@@ -1,0 +1,9 @@
+# OpenAI Codex in WSL — Streamable HTTP to Media-MCP-Server on Windows
+# Replace HOST with 127.0.0.1 (WSL mirrored networking) or Windows host IP from:
+#   grep nameserver /etc/resolv.conf | awk '{print $2}'
+
+[mcp_servers.media-mcp-server]
+url = "http://127.0.0.1:8765/mcp"
+enabled = true
+startup_timeout_sec = 30
+tool_timeout_sec = 120

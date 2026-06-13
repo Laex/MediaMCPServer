@@ -67,10 +67,10 @@ var
   TransportEnv, PortStr: string;
 begin
   TransportEnv := EnvOr('MEDIA_MCP_TRANSPORT', '');
-  if HasSwitch('--http') or SameText(TransportEnv, 'http') then
-    Result.Transport := mtHttp
+  if HasSwitch('--stdio') or SameText(TransportEnv, 'stdio') then
+    Result.Transport := mtStdio
   else
-    Result.Transport := mtStdio;
+    Result.Transport := mtHttp;
 
   Result.HttpHost := ParamValue('--host');
   if Result.HttpHost = '' then

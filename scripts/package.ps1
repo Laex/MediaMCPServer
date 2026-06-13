@@ -51,6 +51,8 @@ foreach ($onnx in @('backbone.onnx', 'neckhead.onnx')) {
     $src = Join-Path $BinDir $onnx
     if (Test-Path $src) { Copy-Item $src $pkgBin -Force }
 }
+Get-ChildItem $BinDir -Filter 'launch_http*.cmd' -ErrorAction SilentlyContinue |
+    Copy-Item -Destination $pkgBin -Force
 
 $pkgModels = Join-Path $pkgBin 'models'
 $srcModels = Join-Path $BinDir 'models'
@@ -73,12 +75,33 @@ $pkgConfig = Join-Path $pkgDir 'config'
 New-Item -ItemType Directory -Force -Path $pkgConfig | Out-Null
 Get-ChildItem (Join-Path $ProjectRoot 'config') -File | Copy-Item -Destination $pkgConfig -Force
 
+# --- WSL helper scripts ---
+$pkgScripts = Join-Path $pkgDir 'scripts'
+New-Item -ItemType Directory -Force -Path $pkgScripts | Out-Null
+New-Item -ItemType Directory -Force -Path (Join-Path $pkgScripts 'tests') | Out-Null
+foreach ($rel in @(
+    'setup_wsl_http.ps1',
+    'setup_wsl_mcp.sh',
+    'tests\test_http_mcp_wsl.sh'
+)) {
+    $src = Join-Path $PSScriptRoot $rel
+    if (Test-Path $src) {
+        $dest = Join-Path $pkgScripts $rel
+        $destDir = Split-Path $dest -Parent
+        if ($destDir -and -not (Test-Path $destDir)) {
+            New-Item -ItemType Directory -Force -Path $destDir | Out-Null
+        }
+        Copy-Item $src $dest -Force
+    }
+}
+
 # --- distribution installer & docs ---
 $pkgDocs = Join-Path $pkgDir 'docs'
 New-Item -ItemType Directory -Force -Path $pkgDocs | Out-Null
 Copy-Item (Join-Path $PSScriptRoot 'dist_install.ps1') (Join-Path $pkgDir 'install.ps1') -Force
 Copy-Item (Join-Path $ProjectRoot 'docs\DISTRIBUTION.md') (Join-Path $pkgDir 'README.md') -Force -ErrorAction SilentlyContinue
 Copy-Item (Join-Path $ProjectRoot 'docs\INSTALLATION.md') (Join-Path $pkgDocs 'INSTALLATION.md') -Force -ErrorAction SilentlyContinue
+Copy-Item (Join-Path $ProjectRoot 'docs\WSL.md') (Join-Path $pkgDocs 'WSL.md') -Force -ErrorAction SilentlyContinue
 Copy-Item (Join-Path $ProjectRoot 'docs\EXAMPLES.md') (Join-Path $pkgDocs 'EXAMPLES.md') -Force -ErrorAction SilentlyContinue
 
 Set-Content -Path (Join-Path $pkgDir 'VERSION.txt') -Value @(
