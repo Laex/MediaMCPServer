@@ -1,6 +1,6 @@
 # Media-MCP-Server
 
-MCP server (Streamable HTTP + optional stdio) for media processing via **OpenCV 5**, **FFmpeg**, and **ONVIF**.
+MCP server (Streamable HTTP + optional stdio) for media processing via **OpenCV 5.0**, **FFmpeg**, and **ONVIF**.
 
 ## Quick start (development)
 
@@ -71,7 +71,9 @@ MediaMCPServer/
 | `.\scripts\download_models.ps1` | ONNX models only |
 | `.\scripts\download_ffmpeg_dll.ps1` | FFmpeg DLLs only |
 | `.\scripts\download_opencv_runtime.ps1` | OpenCV DLLs + build `opencv_delphi_wrapper.dll` |
-| `.\scripts\package.ps1` | Create production ZIP in `dist\` |
+| `.\scripts\package.ps1` | Create lite ZIP in `dist\` (default) |
+| `.\scripts\package.ps1 -Variant full` | Create offline full ZIP |
+| `.\scripts\release.ps1 -Version X -Publish` | Package + GitHub Release |
 | `.\scripts\setup_mcp.ps1` | Regenerate project MCP config (HTTP, starts server) |
 | `.\scripts\setup_mcp.ps1 -Stdio` | stdio MCP config instead of HTTP |
 | `.\scripts\setup_mcp.ps1 -Wsl` | WSL HTTP setup (Windows side) |
@@ -138,21 +140,18 @@ On a **developer machine** with a full build:
 
 ```powershell
 .\install.ps1
-.\scripts\package.ps1
+.\scripts\release.ps1 -Version "1.0.3"
 ```
 
-Creates `dist\media-mcp-server-YYYY.MM.DD-win64.zip`:
+Creates `dist\media-mcp-server-<version>-win64-lite.zip` (GitHub default).  
+Optional full offline ZIP: `-Variant both`. Publish: `-Publish` (requires `gh` CLI).
 
-- `bin\` — exe, DLLs, ONNX models
-- `data\media\` — empty user storage
-- `config\` — MCP config template
-- `install.ps1` — configures MCP clients
-- `README.md`, `VERSION.txt`
+See **[docs/RELEASE.md](docs/RELEASE.md)** for the full maintainer workflow.
 
 On **target machine** (no Delphi):
 
 ```powershell
-# extract ZIP, then:
+# download lite ZIP from GitHub Releases, extract, then:
 .\install.ps1
 ```
 

@@ -5,7 +5,9 @@ param(
     [string]$Mode = 'all',
     [string]$ServerName = 'media-mcp-server',
     [switch]$StartServer,
-    [switch]$NoStartServer
+    [switch]$NoStartServer,
+    [switch]$SkipDownload,
+    [switch]$ForceDownload
 )
 
 $ErrorActionPreference = "Stop"
@@ -126,6 +128,36 @@ function Start-HttpServerIfNeeded {
     Write-Host "Started MediaMCPServer HTTP (PID $($proc.Id))" -ForegroundColor Green
 }
 
+function Install-RuntimeDependencies {
+    if ($SkipDownload) {
+        Write-Host "Skipping dependency download (-SkipDownload)" -ForegroundColor Yellow
+        return
+    }
+
+    $downloadScript = Join-Path $PkgRoot 'scripts\download_deps.ps1'
+    if (-not (Test-Path $downloadScript)) {
+        Write-Host "No scripts\download_deps.ps1 — assuming full offline package" -ForegroundColor DarkGray
+        return
+    }
+
+    Write-Host ""
+    Write-Host "Downloading runtime dependencies (FFmpeg, OpenCV, ONNX models)..." -ForegroundColor Cyan
+    Write-Host "Internet connection required on first install." -ForegroundColor DarkGray
+
+    $dlArgs = @()
+    if ($ForceDownload) { $dlArgs += '-Force' }
+    & $downloadScript @dlArgs
+    if ($LASTEXITCODE -ne 0) { throw "download_deps.ps1 failed with exit code $LASTEXITCODE" }
+
+    $verifyScript = Join-Path $PkgRoot 'scripts\verify_install.ps1'
+    if (Test-Path $verifyScript) {
+        Write-Host ""
+        Write-Host "Verifying downloaded runtime..." -ForegroundColor Cyan
+        & $verifyScript -Strict
+        if ($LASTEXITCODE -ne 0) { throw 'Runtime verification failed after download.' }
+    }
+}
+
 Write-Host "=== Media MCP Server - Package Install ===" -ForegroundColor Cyan
 Write-Host "Package: $PkgRoot"
 
@@ -134,6 +166,8 @@ Test-Package
 foreach ($sub in @('captures', 'output', 'faces', 'video')) {
     New-Item -ItemType Directory -Force -Path (Join-Path $MediaDir $sub) | Out-Null
 }
+
+Install-RuntimeDependencies
 
 $exePath = (Resolve-Path $ExePath).Path
 $binPath = (Resolve-Path $BinDir).Path
@@ -259,6 +293,9 @@ Write-Host "Environment (optional):" -ForegroundColor Cyan
 Write-Host "  MEDIA_MCP_DATA_PATH = custom data folder"
 Write-Host "  OPENCV_MODELS_PATH  = custom models folder"
 Write-Host "  MEDIA_MCP_TRANSPORT = stdio   # force stdio instead of HTTP"
+Write-Host ""
+Write-Host "Re-download deps: .\install.ps1 -ForceDownload"
+Write-Host "Skip download:    .\install.ps1 -SkipDownload   # full offline package"
 Write-Host ""
 Write-Host "See docs\INSTALLATION.md for per-client setup details." -ForegroundColor Cyan
 Write-Host "Install complete." -ForegroundColor Green
