@@ -46,3 +46,7 @@ __recovery/
 # Logs and secrets
 *.log
 .env
+
+#Habr
+habr*
+.obsidian

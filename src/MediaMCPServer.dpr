@@ -5,6 +5,7 @@ program MediaMCPServer;
 uses
   System.SysUtils,
   uMCPConfig in 'uMCPConfig.pas',
+  uMCPRuntime in 'uMCPRuntime.pas',
   uMCPHandler in 'uMCPHandler.pas',
   uMCPHttpServer in 'uMCPHttpServer.pas',
   uMCPServer in 'uMCPServer.pas',
@@ -28,6 +29,7 @@ begin
   try
     // OpenCV TrackerNano and some DNN helpers resolve backbone.onnx relative to CWD.
     SetCurrentDir(ExtractFilePath(ParamStr(0)));
+    ConfigureMediaLogging;
     Config := TMCPConfig.Load;
     if Config.Transport = mtHttp then
     begin
